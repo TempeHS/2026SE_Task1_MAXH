@@ -1,0 +1,12 @@
+# Requirements: the project should
+#   - be able to sign up new members - takes a email/username and password
+#   - use two factor auth
+#   - the ability to edit previous documents (with updating date)
+#   - at least two levels of authorisation (basic, admin)
+#   - the ability to create a log
+#     - log should include name, date, description, Block of blockiness
+#   - data should be stored in individual sql databases with joins
+#     - databases might include, user, data, description, block of blockiness
+#   - proper end to end encryption
+#   - data and time should be universly related
+#   -
