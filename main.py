@@ -68,14 +68,24 @@ def privacy():
 
 
 # example CSRF protected form
-@app.route("/form.html", methods=["POST", "GET"])
-def form():
+# @app.route("/form.html", methods=["POST", "GET"])
+# def form():
+#     if request.method == "POST":
+#         email = request.form["email"]
+#         text = request.form["text"]
+#         return render_template("/form.html")
+#     else:
+#         return render_template("/form.html")
+
+
+@app.route("/login.html", methods=["POST", "GET"])
+def login():
     if request.method == "POST":
         email = request.form["email"]
-        text = request.form["text"]
-        return render_template("/form.html")
+        text = request.form["password"]
+        return render_template("/login.html")
     else:
-        return render_template("/form.html")
+        return render_template("/login.html")
 
 
 # Endpoint for logging CSP violations

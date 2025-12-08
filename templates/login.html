@@ -1,7 +1,46 @@
 {% extends 'layout.html' %} {% block content %}
 <div class="container">
   <div class="row">
-    <h1 class="display-1">HELKKO</h1>
+    <h1>Login</h1>
   </div>
 </div>
-{% block content %}
+<div class="container">
+  <div class="row">
+    <form action="/login.html" method="POST" class="box">
+      <div class="col-auto">
+        <label name="exampleFormControlInput1" class="form-label"
+          >Email address</label
+        >
+        <input
+          name="email"
+          type="email"
+          class="form-control"
+          id="exampleFormControlInput1"
+          pattern="[a-z0-9._%+-]+[a-z0-9.-]+\.[a-z]{2, 4}$"
+          placeholder="name@example.com"
+        />
+      </div>
+      <form action="/login.html" method="POST" class="box">
+      <div class="col-auto">
+        <label name="exampleFormControlInput1" class="form-label"
+          >password</label
+        >
+        <input
+          name="password"
+          type="password"
+          class="form-control"
+          id="exampleFormControlInput1"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$"
+          placeholder="1234"
+        />
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+      </div>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    </form>
+    <div>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
