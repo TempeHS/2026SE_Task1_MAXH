@@ -10,3 +10,5 @@ def getUsers():
     con.close()
     return cur
 
+def authenticateUser(email, password):
+    

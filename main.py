@@ -3,6 +3,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import jsonify
+from flask import url_for
 import requests
 from flask_wtf import CSRFProtect
 from flask_csp.csp import csp_header
@@ -83,6 +84,11 @@ def login():
     if request.method == "POST":
         email = request.form["email"]
         text = request.form["password"]
+        submit = request.form.get("submit") == True #gets button back as boolean
+
+        if submit:
+            result = dbHandler.
+
         return render_template("/login.html")
     else:
         return render_template("/login.html")
