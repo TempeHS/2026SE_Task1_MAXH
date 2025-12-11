@@ -82,16 +82,18 @@ def privacy():
 @app.route("/login.html", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        email = request.form["email"]
-        text = request.form["password"]
-        submit = request.form.get("submit") == True #gets button back as boolean
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
 
-        if submit:
-            result = dbHandler.
+        if dbHandler.authenticateUser(email, password):
+            ...
 
         return render_template("/login.html")
     else:
         return render_template("/login.html")
+
+
+@app.route("", methods=["POST", "GET"])
 
 
 # Endpoint for logging CSP violations
