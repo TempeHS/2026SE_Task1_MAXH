@@ -27,7 +27,6 @@ def addUser(email, password):
         con.commit()
         con.close()
         return True
-
     except sql.IntegrityError:
         return False
     except Exception as e:
