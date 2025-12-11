@@ -68,17 +68,6 @@ def privacy():
     return render_template("/privacy.html")
 
 
-# example CSRF protected form
-# @app.route("/form.html", methods=["POST", "GET"])
-# def form():
-#     if request.method == "POST":
-#         email = request.form["email"]
-#         text = request.form["text"]
-#         return render_template("/form.html")
-#     else:
-#         return render_template("/form.html")
-
-
 @app.route("/login.html", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -93,15 +82,31 @@ def login():
         return render_template("/login.html")
 
 
-@app.route("", methods=["POST", "GET"])
+@app.route("/signup.html", methods=["POST", "GET"])
+def signup():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+        signedup = dbHandler.addUser(email, password)
+        if signedup:
+            return redirect("/index.html")
+        else:
+            return render_template("/signup.html", error="unable to add user")
+    return render_template("/signup.html")
+
+
+@app.route("/devlog.html", methods=["POST", "GET"])
+def devlog(): ...
 
 
 # Endpoint for logging CSP violations
-@app.route("/csp_report", methods=["POST"])
-@csrf.exempt
-def csp_report():
-    app.logger.critical(request.data.decode())
-    return "done"
+# @app.route("/csp_report", methods=["POST"])
+
+
+# @csrf.exempt
+# def csp_report():
+#     app.logger.critical(request.data.decode())
+#     return "done"
 
 
 if __name__ == "__main__":

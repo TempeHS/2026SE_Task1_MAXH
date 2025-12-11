@@ -6,23 +6,24 @@ import bcrypt
 def getUsers():
     con = sql.connect("databaseFiles/logins.db")
     cur = con.cursor()
-    cur.execute("SELECT * FROM id7-tusers")
+    cur.execute("SELECT * FROM logins")
     con.close()
     return cur
 
-def authenticateUser(email, password):
-    
 
-def addUser (email, password)
+def authenticateUser(email, password): ...
+
+
+def addUser(email, password):
     try:
-        con = sql.connect("databaseFiles/logins.db")
+        con = sql.connect("databaseFiles/database.db")
         cur = con.cursor()
-
-        cur.execute(
-            "insert into logins (email, password) Values"
-            (email, password)
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode(
+            "utf-8"
         )
-
+        cur.execute(
+            "insert into logins (email, password) Values (?, ?)", (email, hashed)
+        )
         con.commit()
         con.close()
         return True
