@@ -4,6 +4,7 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 from flask import url_for
+from flask import session
 import requests
 from flask_wtf import CSRFProtect
 from flask_csp.csp import csp_header
@@ -63,9 +64,9 @@ def index():
     return render_template("/index.html")
 
 
-@app.route("/privacy.html", methods=["GET"])
-def privacy():
-    return render_template("/privacy.html")
+@app.route("/profile.html", methods=["GET"])
+def profile():
+    return render_template("/profile.html")
 
 
 @app.route("/login.html", methods=["POST", "GET"])
@@ -74,11 +75,20 @@ def login():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
         if dbHandler.authenticateUser(email, password):
+            session["logged_in"] = True
+            session["email"] = email
             return redirect("/index.html")
         else:
+            print("fail")
             return render_template("/login.html")
     else:
         return render_template("/login.html")
+
+
+@app.route("/logout.html", methods=["GET"])
+def logout():
+    session.clear()
+    return redirect("/login.html")
 
 
 @app.route("/signup.html", methods=["POST", "GET"])
@@ -88,7 +98,7 @@ def signup():
         password = request.form.get("password", "")
         signedup = dbHandler.addUser(email, password)
         if signedup:
-            return redirect("/index.html")
+            return redirect("/login.html")
         else:
             return render_template("/signup.html", error="unable to add user")
     return render_template("/signup.html")
