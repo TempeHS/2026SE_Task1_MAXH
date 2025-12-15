@@ -1,13 +1,16 @@
-*   {
-
+* {
 }
 body {
-
 }
 .container {
-
 }
 
 .row {
-    
+}
+
+.card-body {
+  min-width: 600px !important;
+  width: 600px !important;
+  max-width: 600px !important;
+  text-align: center;
 }

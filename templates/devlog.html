@@ -1,0 +1,129 @@
+{% extends 'layout.html' %} {% block content %}
+<div
+  class="container d-flex justify-content-center align-items-center"
+  style="min-height: 60vh"
+>
+  <div style="width: 600px">
+    <div class="text-center mb-3">
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#addlog"
+        aria-expanded="false"
+        aria-controls="addlog"
+      >
+        add log
+      </button>
+    </div>
+
+    <div class="collapse" id="addlog">
+      <div class="card card-body">
+        <form action="/devlog.html" method="POST" class="px-4 py-3">
+          <div class="form-group mb-3">
+            <label for="devname">Developer name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="devname"
+              name="devname"
+              placeholder="john software"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="projectname">Project</label>
+            <input
+              type="text"
+              class="form-control"
+              id="projectname"
+              name="projectname"
+              placeholder="project omega alpha 7274"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="log">log</label>
+            <input
+              type="text"
+              class="form-control"
+              id="log"
+              name="log"
+              placeholder="today i ate pie"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="startdate">start date</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              id="startdate"
+              name="startdate"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="enddate">end date</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              id="enddate"
+              name="enddate"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="timeworked">time worked</label>
+            <input
+              type="text"
+              class="form-control"
+              id="timeworked"
+              name="timeworked"
+              placeholder="400000 years"
+              required
+            />
+          </div>
+
+          <hr />
+
+          <div class="form-group mb-3">
+            <label for="repo">repository</label>
+            <input
+              type="url"
+              class="form-control"
+              id="repo"
+              name="repo"
+              placeholder="https://super-fortnight-4j7r7v67jrx7hqv54.github.dev/"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3 w-100">
+            submit log
+          </button>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        </form>
+      </div>
+    </div>
+    <a class="btn btn-outline-success" href="/devview.html" role="button"
+      >view your Logs</a
+    >
+  </div>
+</div>
+{% endblock %}

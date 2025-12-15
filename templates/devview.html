@@ -1,0 +1,176 @@
+{% extends 'layout.html' %} {% block content %}
+<div
+  class="container d-flex justify-content-center align-items-center"
+  style="min-height: 60vh"
+>
+  <div style="width: 600px">
+    <!-- Sort Controls Button -->
+    <div class="text-center mb-3">
+      <button
+        class="btn btn-info"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#sortOptions"
+        aria-expanded="false"
+        aria-controls="sortOptions"
+      >
+        Sort Options
+      </button>
+    </div>
+
+    <!-- Collapsible Sort Form -->
+    <div class="collapse" id="sortOptions">
+      <div class="card card-body mb-4">
+        <form method="POST" action="/devview.html" class="px-4 py-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <!-- search function-->
+          <div class="form-group mb-3"> 
+            <label for="search" class="form-label text-primary">search log</label>
+            <input 
+            type="text" 
+            class="form-control search-input" 
+            placeholder="Search inside log"
+            id="search"
+            name="search"
+            value="{{ search }}">
+          </div>
+          <hr>
+
+          <!-- Primary Sort -->
+          <div class="form-group mb-3">
+            <label for="sort1" class="form-label text-primary">Primary Sort</label>
+            <select class="form-select mb-2" id="sort1" name="sort1" required>
+              <option value="date" {% if sort1 == 'date' %}selected{% endif %}>Date Created</option>
+              <option value="startdate" {% if sort1 == 'startdate' %}selected{% endif %}>Start Date</option>
+              <option value="enddate" {% if sort1 == 'enddate' %}selected{% endif %}>End Date</option>
+              <option value="project" {% if sort1 == 'project' %}selected{% endif %}>Project</option>
+              <option value="developer" {% if sort1 == 'developer' %}selected{% endif %}>Developer</option>
+              <option value="repo" {% if sort1 == 'repo' %}selected{% endif %}>Repository</option>
+              <option value="timeworked" {% if sort1 == 'timeworked' %}selected{% endif %}>Time Worked</option>
+            </select>
+            <select class="form-select" id="order1" name="order1" required>
+              <option value="ASC" {% if order1 == 'ASC' %}selected{% endif %}>Ascending ↑</option>
+              <option value="DESC" {% if order1 == 'DESC' %}selected{% endif %}>Descending ↓</option>
+            </select>
+          </div>
+
+          <hr />
+
+          <!-- Secondary Sort -->
+          <div class="form-group mb-3">
+            <label for="sort2" class="form-label text-success">Secondary Sort</label>
+            <select class="form-select mb-2" id="sort2" name="sort2">
+              <option value="" {% if not sort2 %}selected{% endif %}>None </option>
+              <option value="date" {% if sort2 == 'date' %}selected{% endif %}>Date Created</option>
+              <option value="startdate" {% if sort2 == 'startdate' %}selected{% endif %}>Start Date</option>
+              <option value="enddate" {% if sort2 == 'enddate' %}selected{% endif %}>End Date</option>
+              <option value="project" {% if sort2 == 'project' %}selected{% endif %}>Project</option>
+              <option value="developer" {% if sort2 == 'developer' %}selected{% endif %}>Developer</option>
+              <option value="repo" {% if sort2 == 'repo' %}selected{% endif %}>Repository</option>
+              <option value="timeworked" {% if sort2 == 'timeworked' %}selected{% endif %}>Time Worked</option>
+            </select>
+            <select class="form-select" id="order2" name="order2">
+              <option value="ASC" {% if order2 == 'ASC' %}selected{% endif %}>Ascending ↑</option>
+              <option value="DESC" {% if order2 == 'DESC' %}selected{% endif %}>Descending ↓</option>
+            </select>
+          </div>
+
+          <hr />
+
+          <!-- Tertiary Sort -->
+          <div class="form-group mb-3">
+            <label for="sort3" class="form-label text-info">Tertiary Sort</label>
+            <select class="form-select mb-2" id="sort3" name="sort3">
+              <option value="" {% if not sort3 %}selected{% endif %}>None</option>
+              <option value="date" {% if sort3 == 'date' %}selected{% endif %}>Date Created</option>
+              <option value="startdate" {% if sort3 == 'startdate' %}selected{% endif %}>Start Date</option>
+              <option value="enddate" {% if sort3 == 'enddate' %}selected{% endif %}>End Date</option>
+              <option value="project" {% if sort3 == 'project' %}selected{% endif %}>Project</option>
+              <option value="developer" {% if sort3 == 'developer' %}selected{% endif %}>Developer</option>
+              <option value="repo" {% if sort3 == 'repo' %}selected{% endif %}>Repository</option>
+              <option value="timeworked" {% if sort3 == 'timeworked' %}selected{% endif %}>Time Worked</option>
+            </select>
+            <select class="form-select" id="order3" name="order3">
+              <option value="ASC" {% if order3 == 'ASC' %}selected{% endif %}>Ascending ↑</option>
+              <option value="DESC" {% if order3 == 'DESC' %}selected{% endif %}>Descending ↓</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3 w-100">
+            Apply Sort
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- Display Logs -->
+    {% if logs %}
+    <div class="alert alert-success text-center mb-3">
+      <strong>{{ logs|length }}</strong> log(s) found
+    </div>
+
+    {% for log in logs %}
+    <div class="card mb-3">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">{{ log[1] }}</h5>
+        <small>Developer: {{ log[0] }}</small>
+      </div>
+      <div class="card-body">
+        <p class="card-text"><strong>Log:</strong> {{ log[2] }}</p>
+
+        <hr />
+
+        <div class="row">
+          <div class="col-6">
+            <p class="mb-1">
+              <strong>Start:</strong><br />{{ log[3] }}
+            </p>
+          </div>
+          <div class="col-6">
+            <p class="mb-1">
+              <strong>End:</strong><br />{{ log[4] }}
+            </p>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+          <div class="col-6">
+            <p class="mb-1"><strong>Time Worked:</strong><br />{{ log[5] }}</p>
+          </div>
+          <div class="col-6">
+            <p class="mb-1"><strong>Logged:</strong><br />{{ log[6] }}</p>
+          </div>
+        </div>
+
+        {% if log[7] %}
+        <hr />
+        <a
+          href="{{ log[7] }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-sm btn-outline-primary w-100"
+        >
+          View Repository
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-info text-center">
+      <h4>No logs yet!</h4>
+      <p>Create your first development log to get started.</p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <a href="/devlog.html" class="btn btn-success me-2">Add New Log</a>
+      <a href="/profile.html" class="btn btn-secondary">Back to Profile</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

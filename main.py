@@ -9,8 +9,10 @@ import requests
 from flask_wtf import CSRFProtect
 from flask_csp.csp import csp_header
 import logging
+from functools import wraps
 
 import userManagement as dbHandler
+import logmanager as devlogger
 
 # Code snippet for logging a message
 # app.logger.critical("message")
@@ -27,6 +29,17 @@ logging.basicConfig(
 app = Flask(__name__)
 app.secret_key = b"_53oi3uriq9pifpff;apl"
 csrf = CSRFProtect(app)
+
+
+# ensures user is authenticated
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("logged_in") or not session.get("email"):
+            return redirect("/login.html")
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 # Redirect index.html to domain root for consistent UX
@@ -65,6 +78,7 @@ def index():
 
 
 @app.route("/profile.html", methods=["GET"])
+@login_required
 def profile():
     return render_template("/profile.html")
 
@@ -105,7 +119,81 @@ def signup():
 
 
 @app.route("/devlog.html", methods=["POST", "GET"])
-def devlog(): ...
+@login_required
+def devlog():
+
+    if request.method == "POST":
+        email = session.get("email")
+        devname = request.form.get("devname", "")
+        project = request.form.get("projectname", "")
+        log = request.form.get("log", "")
+        startdate = request.form.get("startdate", "")
+        enddate = request.form.get("enddate", "")
+        worktime = request.form.get("timeworked", "")
+        repo = request.form.get("repo", "")
+
+        logdone = devlogger.addlog(
+            email, devname, project, log, startdate, enddate, worktime, repo
+        )
+        if logdone:
+            return redirect("/profile.html")
+        else:
+            return render_template("/index.html", error="unable to add user")
+    return render_template("/devlog.html")
+
+
+@app.route("/devview.html", methods=["GET", "POST"])
+@login_required
+def devview():
+
+    email = session.get("email")
+
+    if request.method == "POST":
+        # Get sort parameters from form
+        sort_by = request.form.get("sort1", "date")
+        order = request.form.get("order1", "DESC")
+        sort_by2 = request.form.get("sort2", "")
+        order2 = request.form.get("order2", "DESC")
+        sort_by3 = request.form.get("sort3", "")
+        order3 = request.form.get("order3", "DESC")
+        search = request.form.get("search", "")
+
+        # Build query string for redirect
+        params = f"?sort1={sort_by}&order1={order}"
+        if sort_by2:
+            params += f"&sort2={sort_by2}&order2={order2}"
+        if sort_by3:
+            params += f"&sort3={sort_by3}&order3={order3}"
+        if search:
+            params += f"&search={search}"
+
+        return redirect(f"/devview.html{params}")
+
+    # GET request
+    sort_by = request.args.get("sort1", "date")
+    order = request.args.get("order1", "DESC")
+    sort_by2 = request.args.get("sort2", "")
+    order2 = request.args.get("order2", "DESC")
+    sort_by3 = request.args.get("sort3", "")
+    order3 = request.args.get("order3", "DESC")
+    search = request.args.get("search", "")
+
+    logs = devlogger.viewlog(
+        email, sort_by, order, sort_by2, order2, sort_by3, order3, search
+    )
+
+    return render_template(
+        "/devview.html",
+        logs=logs,
+        email=email,
+        sort1=sort_by,
+        order1=order,
+        sort2=sort_by2,
+        order2=order2,
+        sort3=sort_by3,
+        order3=order3,
+        search=search,
+    )
 
 
 # Endpoint for logging CSP violations
