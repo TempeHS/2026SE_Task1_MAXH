@@ -46,11 +46,10 @@ def viewlog(
             "timeworked": "timeworked",
         }
 
-        constraint_clause = "where email = ?"
+        constraint_clause = "where devlog like ?"
         params = [email]
 
         if search:
-            constraint_clause += " and devlog like ?"
             params.append(f"%{search}%")
 
         # Build ORDER BY clause
@@ -85,7 +84,7 @@ def viewlog(
         if not order_clauses:
             order_clauses.append("date DESC")
 
-        query = f"SELECT developer, project, devlog, startdate, endate, timeworked, date, repo FROM devlog {constraint_clause} ORDER BY {', '.join(order_clauses)}"
+        query = f"SELECT email, developer, project, devlog, startdate, endate, timeworked, date, repo FROM devlog {constraint_clause} ORDER BY {', '.join(order_clauses)}"
 
         cur.execute(query, params)
         logs = cur.fetchall()

@@ -3,6 +3,12 @@
   <div class="row">
     <h1 class="display-1">Welcome to weak security.com</h1>
   </div>
-  <div class="row"></div>
+  <div class="row">
+    <script>
+      window.addEventListener("offline", () => {
+        alert("Offline dummy");
+      });
+    </script>
+  </div>
 </div>
 {% endblock %}
