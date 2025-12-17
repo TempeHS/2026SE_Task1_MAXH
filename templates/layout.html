@@ -15,6 +15,9 @@
     <link href="static/css/bootstrap.min.css" rel="stylesheet" />
   </head>
   <body>
+    <div id="offline-banner" class="offline-banner" style="display: none">
+      <p>⚠️ You are currently offline. Showing cached content.</p>
+    </div>
     {% include "partials/menu.html" %} {% block content %}{% endblock %}
     <script src="static/js/bootstrap.bundle.min.js"></script>
     <script src="static/js/serviceWorker.js"></script>

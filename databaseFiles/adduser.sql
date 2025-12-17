@@ -1,4 +1,7 @@
 -- database: /workspaces/2026SE_Task1_MAXH/databaseFiles/database.db
 
-alter table devlog 
-alter column email drop UNIQUE;
+CREATE TABLE IF NOT EXISTS twoFa (
+    email TEXT UNIQUE NOT NULL,
+    otp text NOT NULL,
+    expiry TIMESTAMP NOT NULL
+);

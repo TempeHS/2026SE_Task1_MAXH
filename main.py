@@ -5,6 +5,7 @@ from flask import request
 from flask import jsonify
 from flask import url_for
 from flask import session
+import twoFa
 import requests
 from flask_wtf import CSRFProtect
 from flask_csp.csp import csp_header
@@ -89,6 +90,16 @@ def login():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
         if dbHandler.authenticateUser(email, password):
+
+            otp = twoFa.generate_otp()
+            if twoFa.store_otp() and twoFa.send_otp_email(email, otp):
+                session["pending_email"] = email
+                return redirect("/verify_2fa.html")
+            else:
+                return render_template(
+                    "/login.html", error="Failed to send verification code"
+                )
+
             session["logged_in"] = True
             session["email"] = email
             return redirect("/index.html")
@@ -157,6 +168,7 @@ def devview():
         sort_by3 = request.form.get("sort3", "")
         order3 = request.form.get("order3", "DESC")
         search = request.form.get("search", "")
+        searchdev = request.form.get("searchdev", "")
 
         # Build query string for redirect
         params = f"?sort1={sort_by}&order1={order}"
@@ -166,6 +178,8 @@ def devview():
             params += f"&sort3={sort_by3}&order3={order3}"
         if search:
             params += f"&search={search}"
+        if searchdev:
+            params += f"&searchdev={searchdev}"  # Added
 
         return redirect(f"/devview.html{params}")
 
@@ -177,9 +191,17 @@ def devview():
     sort_by3 = request.args.get("sort3", "")
     order3 = request.args.get("order3", "DESC")
     search = request.args.get("search", "")
+    searchdev = request.args.get("searchdev", "")
 
     logs = devlogger.viewlog(
-        email, sort_by, order, sort_by2, order2, sort_by3, order3, search
+        sort_by,
+        order,
+        sort_by2,
+        order2,
+        sort_by3,
+        order3,
+        search,
+        searchdev,
     )
 
     return render_template(
@@ -193,6 +215,7 @@ def devview():
         sort3=sort_by3,
         order3=order3,
         search=search,
+        searchdev=searchdev,
     )
 
 

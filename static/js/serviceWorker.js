@@ -1,17 +1,19 @@
+const addr = window.STATIC_ADDRESS | "";
+
 const assets = [
-  "/",
-  "/static/css/style.css",
-  "/static/css/bootstrap.min.css",
-  "/static/js/bootstrap.bundle.min.js",
-  "/static/js/app.js",
-  "/static/images/logo.png",
-  "/static/images/favicon.png",
-  "/static/icons/icon-128x128.png",
-  "/static/icons/icon-192x192.png",
-  "/static/icons/icon-384x384.png",
-  "/static/icons/icon-512x512.png",
-  "/static/icons/desktop_screenshot.png",
-  "/static/icons/mobile_screenshot.png",
+  addr + "/",
+  addr + "css/style.css",
+  addr + "css/bootstrap.min.css",
+  addr + "js/bootstrap.bundle.min.js",
+  addr + "js/app.js",
+  addr + "images/logo.png",
+  addr + "images/favicon.jpg",
+  addr + "icons/icon-128x128.png",
+  addr + "icons/icon-192x192.png",
+  addr + "icons/icon-384x384.png",
+  addr + "icons/icon-512x512.png",
+  addr + "icons/desktop_screenshot.png",
+  addr + "icons/mobile_screenshot.png",
 ];
 
 const CATALOGUE_ASSETS = "catalogue-assets";
@@ -22,9 +24,9 @@ self.addEventListener("install", (installEvt) => {
       .open(CATALOGUE_ASSETS)
       .then((cache) => {
         console.log(cache);
-        return cache.addAll(assets);
+        cache.addAll(assets);
       })
-      .then(() => self.skipWaiting())
+      .then(self.skipWaiting())
       .catch((e) => {
         console.log(e);
       })
@@ -38,7 +40,7 @@ self.addEventListener("activate", function (evt) {
       .then((keyList) => {
         return Promise.all(
           keyList.map((key) => {
-            if (key !== CATALOGUE_ASSETS) {
+            if (key === CATALOGUE_ASSETS) {
               console.log("Removed old cache from", key);
               return caches.delete(key);
             }
@@ -51,21 +53,10 @@ self.addEventListener("activate", function (evt) {
 
 self.addEventListener("fetch", function (evt) {
   evt.respondWith(
-    fetch(evt.request)
-      .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CATALOGUE_ASSETS).then((cache) => {
-          cache.put(evt.request, responseClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        return caches.open(CATALOGUE_ASSETS).then((cache) => {
-          return cache.match(evt.request).then((response) => {
-            // If cached, return it; otherwise return offline page
-            return response || cache.match("/static/offline.html");
-          });
-        });
-      })
+    fetch(evt.request).catch(() => {
+      return caches.open(CATALOGUE_ASSETS).then((cache) => {
+        return cache.match(evt.request);
+      });
+    })
   );
 });

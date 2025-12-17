@@ -22,7 +22,6 @@ def addlog(email, devname, project, log, startdate, enddate, worktime, repo):
 
 
 def viewlog(
-    email,
     sort_by=None,
     order=None,
     sort_by2=None,
@@ -30,6 +29,7 @@ def viewlog(
     sort_by3=None,
     order3=None,
     search=None,
+    searchdev=None,
 ):
     try:
         con = sql.connect("databaseFiles/database.db")
@@ -46,10 +46,20 @@ def viewlog(
             "timeworked": "timeworked",
         }
 
-        constraint_clause = "where devlog like ?"
-        params = [email]
+        constraint_clause = ""
+        params = []
 
-        if search:
+        if search and searchdev:
+            constraint_clause = "where devlog like ? and developer like ?"
+            params.append(f"%{search}%")
+            params.append(f"%{searchdev}%")
+
+        elif searchdev:
+            constraint_clause = "where developer like ?"
+            params.append(f"%{searchdev}%")
+
+        elif search:
+            constraint_clause = "where devlog like ?"
             params.append(f"%{search}%")
 
         # Build ORDER BY clause
@@ -84,7 +94,10 @@ def viewlog(
         if not order_clauses:
             order_clauses.append("date DESC")
 
-        query = f"SELECT email, developer, project, devlog, startdate, endate, timeworked, date, repo FROM devlog {constraint_clause} ORDER BY {', '.join(order_clauses)}"
+        query = f"SELECT developer, project, devlog, startdate, endate, timeworked, date, repo FROM devlog {constraint_clause}"
+
+        if order_clauses:
+            query += f" ORDER BY {', '.join(order_clauses)}"
 
         cur.execute(query, params)
         logs = cur.fetchall()
@@ -92,7 +105,7 @@ def viewlog(
         return logs
     except Exception as e:
         print(f"Error retrieving logs: {e}")
-        return False
+        return []
 
 
 def editlog():

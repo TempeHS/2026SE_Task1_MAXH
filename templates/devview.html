@@ -24,6 +24,19 @@
         <form method="POST" action="/devview.html" class="px-4 py-3">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
+          <!-- developer search-->
+          <div class="form-group mb-3"> 
+            <label for="searchdev" class="form-label text-primary">search developers</label>
+            <input 
+            type="text" 
+            class="form-control search-input" 
+            placeholder="Search inside developers"
+            id="searchdev"
+            name="searchdev"
+            value="{{ searchdev }}">
+          </div>
+
+
           <!-- search function-->
           <div class="form-group mb-3"> 
             <label for="search" class="form-label text-primary">search log</label>
@@ -36,6 +49,8 @@
             value="{{ search }}">
           </div>
           <hr>
+
+          
 
           <!-- Primary Sort -->
           <div class="form-group mb-3">
