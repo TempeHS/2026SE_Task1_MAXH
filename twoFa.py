@@ -16,7 +16,7 @@ def store_otp(email, otp):
         cur = con.cursor()
         expiry = datetime.now() + timedelta(minutes=5)
         cur.execute(
-            "insert or replace into twoFa (email, code, expiry) values (?, ?, ?)",
+            "insert or replace into twoFa (email, otp, expiry) values (?, ?, ?)",
             (email, otp, expiry.isoformat()),
         )
         con.commit()
@@ -31,7 +31,7 @@ def verify_otp(email, otp):
     try:
         con = sql.connect("databaseFiles/database.db")
         cur = con.cursor()
-        cur.execute(" select code, expiry from twoFa where email = ?", (email,))
+        cur.execute(" select otp, expiry from twoFa where email = ?", (email,))
         row = cur.fetchone()
         con.close()
 
@@ -54,8 +54,8 @@ def send_otp(email, otp):
     try:
         SMTP_SERVER = "smtp.gmail.com"
         SMTP_PORT = 587
-        SENDER_EMAIL = "your-email@gmail.com"
-        SENDER_PASSWORD = "your-app-password"
+        SENDER_EMAIL = "example.email"
+        SENDER_PASSWORD = "example.passkey"
 
         msg = MIMEMultipart()
         msg["From"] = SENDER_EMAIL

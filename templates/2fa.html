@@ -1,0 +1,31 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="container">
+  <div class="row">
+    <h1>Enter Verification Code</h1>
+    <p>a 6 digit otp has been sent and is rapidly approaching your location</p>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <form action="/2fa.html" method="POST" class="box">
+      {% if error %}
+      <div class="error in the hole">{{ error }}</div>
+      {% endif %}
+      <div class="col-auto">
+        <label class="form-label">Verification Code</label>
+        <input
+          name="otp"
+          type="text"
+          class="form-control"
+          maxlength="6"
+          pattern="[0-9]{6}"
+          placeholder="123456"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Verify</button>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    </form>
+  </div>
+</div>
+{% endblock %}

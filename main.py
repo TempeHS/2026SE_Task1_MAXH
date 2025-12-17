@@ -92,22 +92,40 @@ def login():
         if dbHandler.authenticateUser(email, password):
 
             otp = twoFa.generate_otp()
-            if twoFa.store_otp() and twoFa.send_otp_email(email, otp):
+            if twoFa.store_otp(email, otp) and twoFa.send_otp(email, otp):
                 session["pending_email"] = email
-                return redirect("/verify_2fa.html")
+                return redirect("/2fa.html")
             else:
                 return render_template(
                     "/login.html", error="Failed to send verification code"
                 )
-
-            session["logged_in"] = True
-            session["email"] = email
-            return redirect("/index.html")
         else:
             print("fail")
             return render_template("/login.html")
     else:
         return render_template("/login.html")
+
+
+@app.route("/2fa.html", methods=["POST", "GET"])
+def verify_2fa():
+    if request.method == "POST":
+        otp = request.form.get("otp", "").strip()
+        email = session.get("pending_email")
+
+        if not email:
+            return redirect("/login.html")
+
+        if twoFa.verify_otp(email, otp):
+            session.pop("pending_email", None)
+            session["logged_in"] = True
+            session["email"] = email
+            return redirect("/index.html")
+        else:
+            return render_template("2fa.html", error="incorrect otp")
+    else:
+        if not session.get("pending_email"):
+            return redirect("/login.html")
+        return render_template("/2fa.html")
 
 
 @app.route("/logout.html", methods=["GET"])
@@ -230,4 +248,4 @@ def devview():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=False, host="0.0.0.0", port=5000)
