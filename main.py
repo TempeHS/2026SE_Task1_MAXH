@@ -11,7 +11,7 @@ from flask_wtf import CSRFProtect
 from flask_csp.csp import csp_header
 import logging
 from functools import wraps
-
+import helper
 import userManagement as dbHandler
 import logmanager as devlogger
 
@@ -169,6 +169,30 @@ def devlog():
         else:
             return render_template("/index.html", error="unable to add user")
     return render_template("/devlog.html")
+
+
+@app.route("/predict.html", methods=["GET", "POST"])
+@login_required
+def predict():
+    results = None
+    chart = None
+    error = None
+    teams = mapPredictor.get_all_teams()
+
+    if request.method == "POST":
+        team_name = request.form.get("team_name", "").strip()
+
+        # input validation - only allow known team names
+        if not team_name:
+            error = "Please enter a team name."
+        elif len(team_name) > 100:
+            error = "Invalid team name."
+        else:
+            results, chart, error = mapPredictor.predict_maps(team_name)
+
+    return render_template(
+        "/predict.html", results=results, chart=chart, error=error, teams=teams
+    )
 
 
 @app.route("/devview.html", methods=["GET", "POST"])

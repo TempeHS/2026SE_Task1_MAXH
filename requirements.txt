@@ -3,3 +3,8 @@ bcrypt
 flask_wtf
 flask-csp
 requests
+numpy
+matplotlib
+pandas
+scikit-learn
+mlcroissant
