@@ -91,14 +91,10 @@ def login():
         password = request.form.get("password", "")
         if dbHandler.authenticateUser(email, password):
 
-            otp = twoFa.generate_otp()
-            if twoFa.store_otp(email, otp) and twoFa.send_otp(email, otp):
-                session["pending_email"] = email
-                return redirect("/2fa.html")
-            else:
-                return render_template(
-                    "/login.html", error="Failed to send verification code"
-                )
+            # Skip 2FA email - go directly to logged in state
+            session["logged_in"] = True
+            session["email"] = email
+            return redirect("/index.html")
         else:
             print("fail")
             return render_template("/login.html")
@@ -177,21 +173,37 @@ def predict():
     results = None
     chart = None
     error = None
-    teams = mapPredictor.get_all_teams()
+
+    try:
+        teams = helper.get_all_teams()
+    except Exception:
+        app_log.exception("Failed to load teams for prediction page")
+        teams = []
+        error = "Unable to load team list."
 
     if request.method == "POST":
         team_name = request.form.get("team_name", "").strip()
 
-        # input validation - only allow known team names
         if not team_name:
             error = "Please enter a team name."
         elif len(team_name) > 100:
             error = "Invalid team name."
         else:
-            results, chart, error = mapPredictor.predict_maps(team_name)
+            try:
+                results, chart, helper_error = helper.predict_maps(team_name)
+                if helper_error:
+                    error = helper_error
+            except Exception:
+                app_log.exception("Prediction failed for team: %s", team_name)
+                error = "Prediction failed. Please try again."
 
     return render_template(
-        "/predict.html", results=results, chart=chart, error=error, teams=teams
+        "/profile.html",
+        results=results,
+        chart=chart,
+        error=error,
+        teams=teams,
+        active_tab="predict",
     )
 
 

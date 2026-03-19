@@ -52,26 +52,26 @@ def verify_otp(email, otp):
 
 def send_otp(email, otp):
     try:
-        SMTP_SERVER = "smtp.gmail.com"
-        SMTP_PORT = 587
-        SENDER_EMAIL = "example.email"
-        SENDER_PASSWORD = "example.passkey"
+        # SMTP_SERVER = "smtp.gmail.com"
+        # SMTP_PORT = 587
+        # SENDER_EMAIL = "example.email"
+        # SENDER_PASSWORD = "example.passkey"
 
-        msg = MIMEMultipart()
-        msg["From"] = SENDER_EMAIL
-        msg["To"] = email
-        msg["Subject"] = "your weaksecurity.com 2FA code"
+        # msg = MIMEMultipart()
+        # msg["From"] = SENDER_EMAIL
+        # msg["To"] = email
+        # msg["Subject"] = "your weaksecurity.com 2FA code"
 
-        body = (
-            f"Your verification code is: {otp}\n\nThis code will expire in 5 minutes."
-        )
-        msg.attach(MIMEText(body, "plain"))
+        # body = (P
+        #     f"Your verification code is: {otp}\n\nThis code will expire in 5 minutes."
+        # )
+        # msg.attach(MIMEText(body, "plain"))
 
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.send_message(msg)
-        server.quit()
+        # server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        # server.starttls()
+        # server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        # server.send_message(msg)
+        # server.quit()
 
         return True
     except Exception as e:
